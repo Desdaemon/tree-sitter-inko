@@ -1,28 +1,54 @@
 (lit_str) @string
-(lit_str expr: (identifier) @embedded)
-
-[
-  (lit_int)
-  (lit_float)
-] @constant
+(lit_int) @constant.numeric.integer
+(lit_float) @constant.numeric.float
 
 (escape) @string.special
+(comment) @comment
 
-"," @punctuation.delimiter
 
 [
-  "ref" "mut" "recover" "uni" "as" "throw" "return" "try" "fn" "else"
+  "ref" "mut" "recover" "uni" "as" "throw" "return" "try" "try!" "fn" "else"
+  "async" "move" "let" "next" "break" "if" "match" "case" "loop" "while"
 ] @keyword
 
-[
-  "="
-] @operator
+(binop) @operator
 
 [
   "and" "or"
-] @operator.keyword
+] @keyword.operator
 
-[ "[" "]" ] @punctuation.bracket
+[ 
+  ":" ","
+] @punctuation.delimiter
 
+[
+  "(" ")"
+] @punctuation
+
+[ 
+  "[" "]"
+] @punctuation.bracket
+
+((type_identifier) @type.builtin
+  (#match? @type.builtin "^(Int|Float|Option|Result|List)$"))
 (type_identifier) @type
 (ERROR) @error
+
+((identifier) @constant
+  (#match? @constant "^[A-Z_][A-Z\d_]*$"))
+
+(expr_call (identifier) @variable .)
+(expr_call (identifier) @function)
+
+[
+  "true" "false"
+] @constant.builtin.boolean
+
+"nil" @constant.builtin
+
+"self" @variable.builtin  
+
+((identifier) @variable
+  (#is-not? local))
+
+(identifier) @variable.parameter

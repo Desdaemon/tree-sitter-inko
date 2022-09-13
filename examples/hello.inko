@@ -12,16 +12,35 @@
 	throw ref mut recover 123,
 	123 and 123 or 123,
 	123 as Int,
-	123[123] = 123,
+	asd[123] = 123,
 	return '123',
 	try {123},
 	try 123 else 234,
+	async 123,
+	ASDF_SOME_CONSTANT,
 	try {123} else (foo: (
 		List[Int],
 		fn,
-		fn (Int) !!Int -> Int,
+		fn(Int, Int) !!Int -> Int,
 	)) {
+		let mut @asd = 123
+		let asd = if true {123} else if false {234} else {123 123}
 		'123'
-		[123,]
+		[123,]	
+		foobar(name: 123)
+		12.to(13)
+		@asd(123, name: 123) fn (it) {
+			it
+		}
+		let asd = match true {
+			case true or 123 -> { "true" }
+			case false -> { "false" }
+		}
+		loop { foobar }
+		while true {
+			foobar += 1
+		}
+		let asd = Asd { asd = 123 }
 	}
 ]
+

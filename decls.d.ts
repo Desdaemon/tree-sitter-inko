@@ -29,5 +29,6 @@ interface Grammar<K extends string> {
   }
   word?: ($: Record<K, Rule>) => Rule
   conflicts?: ($: Record<K, Rule>) => Rule[][],
+  extras?: ($: Record<K, Rule>) => Rule[],
   [_: string]: any
 }
