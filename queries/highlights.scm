@@ -1,5 +1,5 @@
 (lit_str) @string
-(lit_str expr: _ @embedded)
+(lit_str expr: (identifier) @embedded)
 
 [
   (lit_int)
@@ -11,7 +11,7 @@
 "," @punctuation.delimiter
 
 [
-  "ref" "mut" "recover" "as" "throw" "return" "try"
+  "ref" "mut" "recover" "uni" "as" "throw" "return" "try" "fn" "else"
 ] @keyword
 
 [
@@ -24,4 +24,5 @@
 
 [ "[" "]" ] @punctuation.bracket
 
-(type) @type
+(type_identifier) @type
+(ERROR) @error

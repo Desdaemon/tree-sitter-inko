@@ -4,19 +4,23 @@
 	'asd',
 	"asd",
 	"asd\n",
-	"asd{ foobar }\n",
+	"asd{ foobar }\n{ 123 }",
 	(123,),
 	(123, 123),
 	([123],),
 	([], []),
 	throw ref mut recover 123,
 	123 and 123 or 123,
-	123 as '123',
+	123 as Int,
 	123[123] = 123,
 	return '123',
 	try {123},
 	try 123 else 234,
-	try {123} else (foo: List[Int]) {
+	try {123} else (foo: (
+		List[Int],
+		fn,
+		fn (Int) !!Int -> Int,
+	)) {
 		'123'
 		[123,]
 	}
