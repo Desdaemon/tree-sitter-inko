@@ -1,0 +1,3 @@
+[submodule "inko"]
+	path = inko
+	url = https://gitlab.com/inko-lang/inko

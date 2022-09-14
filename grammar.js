@@ -298,6 +298,5 @@ module.exports = grammar({
     )),
     _type_tuple: $ => seq('(', optional($._types), ')'),
     _types: $ => separated($._type, ','),
-    // _block_or: $ => choice($._block, prec.left($._expr)),
   }
 })
