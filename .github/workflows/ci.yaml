@@ -10,11 +10,17 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          submodules: true
+          submodules: recursive
       - uses: pnpm/action-setup@v2.2.2
         with:
           version: latest
-      - run: pnpm i
+      - run: pnpm install
       - run: pnpm tree-sitter generate
-      - run: pnpm tree-sitter parse -q inko/libstd/**/*.inko
-      - run: pnpm tree-sitter highlight -q inko/libstd/**/*.inko
+      - run: pnpm tree-sitter init-config
+      - name: Configure tree-sitter
+        run: |
+          set -euxo pipefail
+          sudo apt install moreutils
+          jq ".[\"parser-directories\"] += [\"/home/runner/work\"]" ~/.config/tree-sitter/config.json | \
+            sponge ~/.config/tree-sitter/config.json
+      - run: pnpm tree-sitter parse -qs $(find inko/libstd -name '*.inko')
