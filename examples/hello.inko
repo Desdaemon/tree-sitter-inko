@@ -40,7 +40,7 @@
 		while true {
 			foobar += 1
 		}
-		let asd = Asd { asd = 123 }
+		let asd = Option { @foo = 123 }
 	}
 ]
 

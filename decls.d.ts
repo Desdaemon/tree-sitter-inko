@@ -18,8 +18,11 @@ declare const token: {
 declare function grammar<K extends string>(grammar: Grammar<K>): typeof grammar;
 declare const prec: {
   (strength: number, rule: Rule): Rule
+  left(rule: Rule): Rule
   left(strength: number, rule: Rule): Rule
+  right(rule: Rule): Rule
   right(strength: number, rule: Rule): Rule
+  dynamic(strength: number, rule: Rule): Rule
 }
 
 interface Grammar<K extends string> {

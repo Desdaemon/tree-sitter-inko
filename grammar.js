@@ -18,10 +18,18 @@ module.exports = grammar({
     [$._type_named],
     [$._types],
     [$.expr_call],
-    [$.lit_class, $.expr_call],
   ],
   rules: {
     program: $ => $._expr,
+    // program: $ => $._tle,
+    _tle: $ => choice(
+      $.define,
+    ),
+    define: $ => seq('let',
+      optional('pub'),
+      $.identifier,
+      '=', $._expr,
+    ),
     comment: () => /#.*/,
     lit_int: () => choice(
       /0[xX][a-fA-F\d_]+/,
@@ -94,15 +102,15 @@ module.exports = grammar({
     expr_unary_blk: $ => prec(3, seq(choice(
       'recover', 'async'
     ), $._expr)),
-    expr_binary: $ => seq(prec.left(1, $._expr), choice('and', 'or'), prec.left(1, $._expr)),
+    expr_binary: $ => seq(prec.left($._expr), choice('and', 'or'), prec.left($._expr)),
     expr_cast: $ => seq($._expr, 'as', $._type),
     expr_index: $ => seq(prec(-1, $._expr), '[', $._expr, ']'),
-    expr_return: $ => prec.right(2, seq('return', optional($._expr))),
-    expr_try: $ => prec.left(1, seq('try', $._expr, optional($.expr_try_else))),
+    expr_return: $ => prec.right(seq('return', optional($._expr))),
+    expr_try: $ => prec.left(seq('try', $._expr, optional($.expr_try_else))),
     expr_try_else: $ => prec(2, seq('else', optional(seq(
       '(', $.identifier, optional($._type_ann), ')',
     )), $._block_or)),
-    expr_try_panic: $ => seq('try!', prec.right(1, $._expr)),
+    expr_try_panic: $ => seq('try!', prec.right($._expr)),
     expr_call: $ => prec(-1, seq(
       optional(seq(
         $._expr, '.',
@@ -115,7 +123,7 @@ module.exports = grammar({
       $.identifier,
       optional($._type_ann),
       '=',
-      prec.left(1, $._expr),
+      prec.left($._expr),
     ),
     call_args: $ => seq('(', optional($._call_args), ')'),
     _call_args: $ => choice(
@@ -126,7 +134,7 @@ module.exports = grammar({
     ),
     args_pos: $ => $._expr,
     args_named: $ => seq($.identifier, ':', $._expr),
-    expr_binop: $ => prec.right(1, seq($._expr, $.binop, $._expr)),
+    expr_binop: $ => prec.right(seq($._expr, $.binop, $._expr)),
     binop: () => choice(
       '+', '-', '*', '/', '**', '&', '|', '^', '%', '>>', '<<',
       '=', ':=', '+=', '-=', '*=', '/=', '**=', '&=', '|=', '^=', '%=', '>>=', '<<='
@@ -140,13 +148,13 @@ module.exports = grammar({
     ),
     _closure_args: $ => seq($.identifier, optional($._type_ann)),
     expr_kw: () => choice('self', 'true', 'false', 'nil', 'next', 'break'),
-    expr_if: $ => prec.left(1, seq(
+    expr_if: $ => prec.left(seq(
       $._if_branch,
       repeat(seq('else', $._if_branch)),
       optional(seq('else', $._block))
     )),
     _if_branch: $ => seq('if', $._expr_no_class, $._block),
-    _block: $ => seq('{', repeat(prec.left(1, $._expr)), '}'),
+    _block: $ => seq('{', repeat(prec.left($._expr)), '}'),
     expr_match: $ => seq('match',
       $._expr,
       '{', repeat($.case), '}',
@@ -170,7 +178,8 @@ module.exports = grammar({
     pat_or: $ => prec(1, seq($._pat_no_or, repeat(seq('or', $._pat_no_or)))),
     expr_loop: $ => seq('loop', $._block),
     expr_while: $ => seq('while', $._expr, $._block),
-    identifier: () => /[\w_@][\w\d_]*/,
+    identifier: () => /[\w_@][\w\d_]*\??/,
+    // identifier: () => token(seq(/[\w_@]/, repeat(/[\w\d_]/), optional('?'))),
     type_identifier: () => /[A-Z_][\w\d_]*/,
     _type_ann: $ => seq(':', $._type),
     _type: $ => choice(
@@ -184,13 +193,13 @@ module.exports = grammar({
       optional(seq('[', $._types, ']')),
     ),
     type_unary: $ => seq(choice('ref', 'mut', 'uni'), $._type),
-    type_closure: $ => prec.right(1, seq('fn',
+    type_closure: $ => prec.right(seq('fn',
       optional(field('args', $._type_tuple)),
       optional(field('throws', seq('!!', $._type))),
       optional(field('return', seq('->', $._type))),
     )),
     _type_tuple: $ => seq('(', $._types, optional(','), ')'),
     _types: $ => separated($._type, ','),
-    _block_or: $ => choice($._block, prec.left(1, $._expr)),
+    _block_or: $ => choice($._block, prec.left($._expr)),
   }
 })

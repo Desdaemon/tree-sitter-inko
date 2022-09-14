@@ -549,7 +549,7 @@
       "members": [
         {
           "type": "PREC_LEFT",
-          "value": 1,
+          "value": 0,
           "content": {
             "type": "SYMBOL",
             "name": "_expr"
@@ -570,7 +570,7 @@
         },
         {
           "type": "PREC_LEFT",
-          "value": 1,
+          "value": 0,
           "content": {
             "type": "SYMBOL",
             "name": "_expr"
@@ -622,7 +622,7 @@
     },
     "expr_return": {
       "type": "PREC_RIGHT",
-      "value": 2,
+      "value": 0,
       "content": {
         "type": "SEQ",
         "members": [
@@ -647,7 +647,7 @@
     },
     "expr_try": {
       "type": "PREC_LEFT",
-      "value": 1,
+      "value": 0,
       "content": {
         "type": "SEQ",
         "members": [
@@ -737,7 +737,7 @@
         },
         {
           "type": "PREC_RIGHT",
-          "value": 1,
+          "value": 0,
           "content": {
             "type": "SYMBOL",
             "name": "_expr"
@@ -832,7 +832,7 @@
         },
         {
           "type": "PREC_LEFT",
-          "value": 1,
+          "value": 0,
           "content": {
             "type": "SYMBOL",
             "name": "_expr"
@@ -983,7 +983,7 @@
     },
     "expr_binop": {
       "type": "PREC_RIGHT",
-      "value": 1,
+      "value": 0,
       "content": {
         "type": "SEQ",
         "members": [
@@ -1292,7 +1292,7 @@
     },
     "expr_if": {
       "type": "PREC_LEFT",
-      "value": 1,
+      "value": 0,
       "content": {
         "type": "SEQ",
         "members": [
@@ -1368,7 +1368,7 @@
           "type": "REPEAT",
           "content": {
             "type": "PREC_LEFT",
-            "value": 1,
+            "value": 0,
             "content": {
               "type": "SYMBOL",
               "name": "_expr"
@@ -1733,7 +1733,7 @@
     },
     "identifier": {
       "type": "PATTERN",
-      "value": "[\\w_@][\\w\\d_]*"
+      "value": "[\\w_@][\\w\\d_]*\\??"
     },
     "type_identifier": {
       "type": "PATTERN",
@@ -1835,7 +1835,7 @@
     },
     "type_closure": {
       "type": "PREC_RIGHT",
-      "value": 1,
+      "value": 0,
       "content": {
         "type": "SEQ",
         "members": [
@@ -1987,7 +1987,7 @@
         },
         {
           "type": "PREC_LEFT",
-          "value": 1,
+          "value": 0,
           "content": {
             "type": "SYMBOL",
             "name": "_expr"
@@ -2018,10 +2018,6 @@
       "_types"
     ],
     [
-      "expr_call"
-    ],
-    [
-      "lit_class",
       "expr_call"
     ]
   ],
