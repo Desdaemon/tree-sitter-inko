@@ -5,10 +5,10 @@
 (escape) @string.special
 (comment) @comment
 
-
 [
   "ref" "mut" "recover" "uni" "as" "throw" "return" "try" "try!" "fn" "else"
-  "async" "move" "let" "next" "break" "if" "match" "case" "loop" "while"
+  "async" "move" "let" "next" "break" "if" "match" "case" "loop" "while" "pub"
+  "class" "static" "builtin" "import"
 ] @keyword
 
 (binop) @operator
@@ -18,7 +18,7 @@
 ] @keyword.operator
 
 [ 
-  ":" ","
+  ":" "," "::"
 ] @punctuation.delimiter
 
 [
@@ -40,13 +40,21 @@
 (expr_call (identifier) @variable .)
 (expr_call (identifier) @function)
 
+(def_method
+  . (identifier) @function)
+
+(def_class name: (identifier) @type)
+  
+(class_method
+  name: (identifier) @function)
+
 [
   "true" "false"
 ] @constant.builtin.boolean
 
 "nil" @constant.builtin
 
-"self" @variable.builtin  
+"self" @variable.builtin
 
 ((identifier) @variable
   (#is-not? local))

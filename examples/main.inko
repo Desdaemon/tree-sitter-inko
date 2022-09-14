@@ -1,0 +1,8 @@
+let pub STUFF = 123
+import std::stdio::STDOUT
+
+class async Main {
+  fn async main {
+    STDOUT.new.print("Hello world! {STUFF}")
+  }  
+}

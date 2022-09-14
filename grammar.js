@@ -6,6 +6,13 @@
 */
 const separated = (rule, delim) => seq(rule, repeat(seq(delim, rule)), optional(delim))
 
+
+/** Parses one or more `rule`s separated by `delim`.
+  @param {Rule} rule
+  @param {Rule} delim
+*/
+const sep_nonterm = (rule, delim) => seq(rule, repeat(seq(delim, rule)))
+
 module.exports = grammar({
   name: 'inko',
   word: $ => $.identifier,
@@ -20,16 +27,68 @@ module.exports = grammar({
     [$.expr_call],
   ],
   rules: {
-    program: $ => $._expr,
-    // program: $ => $._tle,
-    _tle: $ => choice(
-      $.define,
+    program: $ => repeat($._tlexpr),
+    _tlexpr: $ => choice(
+      $.def_const,
+      $.def_method,
+      $.def_class,
+      $.import,
     ),
-    define: $ => seq('let',
+    def_const: $ => seq('let',
       optional('pub'),
       $.identifier,
       '=', $._expr,
     ),
+    def_method: $ => seq('fn',
+      optional('pub'),
+      $.identifier,
+      optional($.type_params),
+      optional(field('args', $.method_args)),
+      optional($._type_throws),
+      optional($._type_return),
+      $._block,
+    ),
+    method_args: $ => seq('(', optional(sep_nonterm($._method_arg, ',')), ')'),
+    _method_arg: $ => seq($.identifier, $._type_ann),
+    _type_throws: $ => field('throws', seq('!!', $._type)),
+    _type_return: $ => field('return', seq('->', $._type)),
+    type_params: $ => seq('[',
+      repeat(seq(
+        $.type_identifier,
+        optional(seq(
+          ':', sep_nonterm($._type_named, '+'),
+        )),
+      )),
+      ']',
+    ),
+    def_class: $ => seq('class',
+      optional('pub'),
+      optional(choice('async', 'enum', 'builtin')),
+      field('name', $.identifier),
+      optional($.type_params),
+      '{', repeat($._class_expr), '}'      
+    ),
+    _class_expr: $ => choice(
+      $.class_method
+    ),
+    class_method: $ => seq('fn',
+      optional('pub'),
+      optional(choice('async', 'move', 'static', 'mut')),
+      field('name', choice($.identifier, $.binop)),
+      optional(field('args', $.method_args)),
+      optional($._type_throws),
+      optional($._type_return),
+      $._block,
+    ),
+    import: $ => seq('import',
+      sep_nonterm($.identifier, '::'),
+      '::',
+      choice(
+        seq('(', sep_nonterm($._import_symbol, ','), ')'),
+        $._import_symbol,
+      )
+    ),
+    _import_symbol: $ => choice('*', "self", $.identifier),
     comment: () => /#.*/,
     lit_int: () => choice(
       /0[xX][a-fA-F\d_]+/,
@@ -142,8 +201,8 @@ module.exports = grammar({
     expr_closure: $ => seq('fn',
       optional('move'),
       optional(field('args', seq('(', separated($._closure_args, ','), ')'))),
-      optional(field('throws', seq('!!', $._type))),
-      optional(field('returns', seq('->', $._type))),
+      optional($._type_throws),
+      optional($._type_return),
       $._block,
     ),
     _closure_args: $ => seq($.identifier, optional($._type_ann)),
@@ -195,8 +254,8 @@ module.exports = grammar({
     type_unary: $ => seq(choice('ref', 'mut', 'uni'), $._type),
     type_closure: $ => prec.right(seq('fn',
       optional(field('args', $._type_tuple)),
-      optional(field('throws', seq('!!', $._type))),
-      optional(field('return', seq('->', $._type))),
+      optional($._type_throws),
+      optional($._type_return),
     )),
     _type_tuple: $ => seq('(', $._types, optional(','), ')'),
     _types: $ => separated($._type, ','),
