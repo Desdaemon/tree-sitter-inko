@@ -1,0 +1,19 @@
+name: CI
+on:
+  push:
+    branches: [main]
+jobs:
+  verify:
+    name: Verify parser
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: true
+      - uses: pnpm/action-setup@v2.2.2
+        with:
+          version: latest
+      - run: pnpm i
+      - run: pnpm tree-sitter generate
+      - run: pnpm tree-sitter init-config
+      - run: pnpm tree-sitter parse -q inko/libstd/**/*.inko
