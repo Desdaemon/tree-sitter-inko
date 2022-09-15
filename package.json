@@ -17,6 +17,7 @@
     "gen": "tree-sitter generate",
     "test": "tree-sitter test",
     "parse": "tree-sitter parse",
+    "verify": "tree-sitter parse -sq $(find inko/libstd -name '*.inko')",
     "highlight": "tree-sitter highlight"
   },
   "tree-sitter": [
